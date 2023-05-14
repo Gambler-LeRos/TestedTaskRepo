@@ -131,11 +131,11 @@ namespace TestedTask
                                 Requests_db.Add(item);
                                 break;
                             case "Новая":                               
-                                item.RequestStatus = "Выполнение";
-                                item.RequestNextStep = "В выполненые";
+                                item.RequestStatus = "На выполнении";
+                                item.RequestNextStep = "Выполнено";
                                 item.StgRequestCancel = false;
                                 break;
-                            case "Выполнение":                          
+                            case "На выполнении":                          
                                 item.RequestStatus = "Выполнено";
                                 item.RequestNextStep = "Удалить";
                                 break;
