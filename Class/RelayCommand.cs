@@ -5,6 +5,9 @@ namespace TestedTask
 {
     public class RelayCommand : ICommand
     {
+        /// <summary>
+        /// Обработчик команд
+        /// </summary>
         Action<object?> execute;
         Func<object?, bool>? canExecute;
 

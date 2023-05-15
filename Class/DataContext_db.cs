@@ -2,9 +2,11 @@
 
 namespace TestedTask
 {
-    class DataContext_db
+    class DataContext_db 
     {
-
+        /// <summary>
+        /// Эмуляция базы данных
+        /// </summary>
         public static ObservableCollection<Request> GetRequests()
         {
 
