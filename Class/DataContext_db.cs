@@ -16,17 +16,17 @@ namespace TestedTask
                 new Request { IdRequest = 4, RequestText = "Доставить груз_1 в Тула", RequestStatus = "Отмена", TransferStart = "М.О.", TransferEnd = "Тула", RequestNextStep = "Удалить", StgRequestCancel = false, StgRequestEdit = true},
                 new Request { IdRequest = 5, RequestText = "Доставить груз_1 в Звенигород", RequestStatus = "Выполнено", TransferStart = "Москва", TransferEnd = "Звенигород", RequestNextStep =  "Удалить", StgRequestCancel = false, StgRequestEdit = true},
 
-                new Request { IdRequest = 1, RequestText = "Доставить груз_2 в Питер", RequestStatus = "Новая", TransferStart = "Москва", TransferEnd = "Санкт-Петербург" , StgRequestCancel = true},
-                new Request { IdRequest = 2, RequestText = "Доставить груз_2 в Иваново", RequestStatus = "На выполнении", TransferStart = "Москва", TransferEnd = "Иваново", RequestNextStep = "Выполнено", StgRequestCancel = false, StgRequestEdit = true },
-                new Request { IdRequest = 3, RequestText = "Доставить груз_2 в Рязань", RequestStatus = "Новая", TransferStart = "Москва", TransferEnd = "Рязань", StgRequestCancel = true },
-                new Request { IdRequest = 4, RequestText = "Доставить груз_2 в Тула", RequestStatus = "Отмена", TransferStart = "М.О.", TransferEnd = "Тула", RequestNextStep = "Удалить", StgRequestCancel = false, StgRequestEdit = true},
-                new Request { IdRequest = 5, RequestText = "Доставить груз_2 в Звенигород", RequestStatus = "Выполнено", TransferStart = "Москва", TransferEnd = "Звенигород", RequestNextStep =  "Удалить", StgRequestCancel = false, StgRequestEdit = true},
+                new Request { IdRequest = 6, RequestText = "Доставить груз_2 в Питер", RequestStatus = "Новая", TransferStart = "Москва", TransferEnd = "Санкт-Петербург" , StgRequestCancel = true},
+                new Request { IdRequest = 7, RequestText = "Доставить груз_2 в Иваново", RequestStatus = "На выполнении", TransferStart = "Москва", TransferEnd = "Иваново", RequestNextStep = "Выполнено", StgRequestCancel = false, StgRequestEdit = true },
+                new Request { IdRequest = 8, RequestText = "Доставить груз_2 в Рязань", RequestStatus = "Новая", TransferStart = "Москва", TransferEnd = "Рязань", StgRequestCancel = true },
+                new Request { IdRequest = 9, RequestText = "Доставить груз_2 в Тула", RequestStatus = "Отмена", TransferStart = "М.О.", TransferEnd = "Тула", RequestNextStep = "Удалить", StgRequestCancel = false, StgRequestEdit = true},
+                new Request { IdRequest = 10, RequestText = "Доставить груз_2 в Звенигород", RequestStatus = "Выполнено", TransferStart = "Москва", TransferEnd = "Звенигород", RequestNextStep =  "Удалить", StgRequestCancel = false, StgRequestEdit = true},
 
-                new Request { IdRequest = 1, RequestText = "Доставить груз_3 в Питер", RequestStatus = "Новая", TransferStart = "Москва", TransferEnd = "Санкт-Петербург" , StgRequestCancel = true},
-                new Request { IdRequest = 2, RequestText = "Доставить груз_3 в Иваново", RequestStatus = "На выполнении", TransferStart = "Москва", TransferEnd = "Иваново", RequestNextStep = "Выполнено", StgRequestCancel = false, StgRequestEdit = true },
-                new Request { IdRequest = 3, RequestText = "Доставить груз_3 в Рязань", RequestStatus = "Новая", TransferStart = "Москва", TransferEnd = "Рязань", StgRequestCancel = true },
-                new Request { IdRequest = 4, RequestText = "Доставить груз_3 в Тула", RequestStatus = "Отмена", TransferStart = "М.О.", TransferEnd = "Тула", RequestNextStep = "Удалить", StgRequestCancel = false, StgRequestEdit = true},
-                new Request { IdRequest = 5, RequestText = "Доставить груз_3 в Звенигород", RequestStatus = "Удалено", TransferStart = "Москва", TransferEnd = "Звенигород", StgRequestMove = false, RequestNextStep =  string.Empty, StgRequestCancel = false, StgRequestEdit = true},
+                new Request { IdRequest = 11, RequestText = "Доставить груз_3 в Питер", RequestStatus = "Новая", TransferStart = "Москва", TransferEnd = "Санкт-Петербург" , StgRequestCancel = true},
+                new Request { IdRequest = 12, RequestText = "Доставить груз_3 в Иваново", RequestStatus = "На выполнении", TransferStart = "Москва", TransferEnd = "Иваново", RequestNextStep = "Выполнено", StgRequestCancel = false, StgRequestEdit = true },
+                new Request { IdRequest = 13, RequestText = "Доставить груз_3 в Рязань", RequestStatus = "Новая", TransferStart = "Москва", TransferEnd = "Рязань", StgRequestCancel = true },
+                new Request { IdRequest = 14, RequestText = "Доставить груз_3 в Тула", RequestStatus = "Отмена", TransferStart = "М.О.", TransferEnd = "Тула", RequestNextStep = "Удалить", StgRequestCancel = false, StgRequestEdit = true},
+                new Request { IdRequest = 15, RequestText = "Доставить груз_3 в Звенигород", RequestStatus = "Удалено", TransferStart = "Москва", TransferEnd = "Звенигород", StgRequestMove = false, RequestNextStep =  string.Empty, StgRequestCancel = false, StgRequestEdit = true},
 
             };
 

@@ -17,6 +17,7 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="Все заявки" Width="150" Margin="3" Command="{Binding ChangedViewStatus}" CommandParameter="Все"/>
                 <Button Content="Новые заявки" Width="150" Margin="3" Command="{Binding ChangedViewStatus}" CommandParameter="Новая"/>
                 <Button Content="На выполнении" Width="150" Margin="3" Command="{Binding ChangedViewStatus}" CommandParameter="На выполнении"/>
                 <Button Content="Выполненые" Width="150" Margin="3" Command="{Binding ChangedViewStatus}" CommandParameter="Выполнено"/>
@@ -40,8 +41,8 @@
                     <ItemsControl ItemsSource="{Binding Requests}" >
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">                                    
-                                    <TextBox Text="{Binding RequestDate}" Width="80" Margin="1" IsReadOnly="{Binding StgRequestEdit}" TextAlignment="Center"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBox Text="{Binding RequestDate, StringFormat=\{0:dd.MM.yyyy\}}" Width="80" Margin="1" IsReadOnly="{Binding StgRequestEdit}" TextAlignment="Center"/>
                                     <TextBox Text="{Binding RequestText}" Width="220" Margin="1" IsReadOnly="{Binding StgRequestEdit}" Padding="5,0,0,0"/>
                                     <TextBox Text="{Binding TransferStart}" Width="140" Margin="1" IsReadOnly="{Binding StgRequestEdit}" Padding="5,0,0,0"/>
                                     <TextBox Text="{Binding TransferEnd}" Width="140" Margin="1" IsReadOnly="{Binding StgRequestEdit}" Padding="5,0,0,0"/>

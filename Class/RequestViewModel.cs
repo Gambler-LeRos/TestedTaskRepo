@@ -62,8 +62,6 @@ namespace TestedTask
                 return _changedVisibility ??
                 (_changedVisibility = new RelayCommand((o) =>
                 {
-
-
                     if (o is Request)
                     {
                         OneItem = (Request)o;
@@ -72,16 +70,14 @@ namespace TestedTask
                     }
                     else
                     {
-                        OneItem = new Request { RequestNextStep = "Создать", RequestStatus = "Создать" };
+                        OneItem = new Request { RequestNextStep = "Создать", RequestStatus = "Создать"};
                         CancelReqVisibility = Visibility.Hidden;
-                        NewReqVisibility = Visibility.Visible;                      
+                        NewReqVisibility = Visibility.Visible;
                     }
 
                     OnPropertyChanged(nameof(NewReqVisibility));
                     OnPropertyChanged(nameof(CancelReqVisibility));
                     OnPropertyChanged(nameof(OneItem));
-
-
 
                     if (BorderVisibility == Visibility.Hidden) BorderVisibility = Visibility.Visible;
                     else BorderVisibility = Visibility.Hidden;
@@ -102,14 +98,15 @@ namespace TestedTask
                 string FindText = Filter.ToLower();
                 accept = (item.RequestText.ToLower().Contains(FindText) || item.TransferStart.ToLower().Contains(FindText) || item.TransferEnd.ToLower().Contains(FindText) || item.RequestStatus.ToLower().Contains(FindText));
             }
-            else if (FilterStatus != string.Empty && item.RequestStatus != FilterStatus) accept = false;
+            else if (FilterStatus != string.Empty && FilterStatus != "Все" && item.RequestStatus != FilterStatus) accept = false;
+            
 
             return accept;
         }
 
 
         private RelayCommand? _changedStatus;
-        public RelayCommand ChangedStatus //Изменение статуса и настроек отображения/изменения заявки
+        public RelayCommand ChangedStatus //Изменение статуса и настроек отображения/изменения заявки/Создание записи новой заявки
         {
             get
             {
@@ -123,29 +120,31 @@ namespace TestedTask
 
                         switch (item.RequestStatus)
                         {
-                            case "Создать":
+                            case "Создать": //Параметры при создании
                                 item.RequestNextStep = "На выполнение";
                                 item.RequestStatus = "Новая";
                                 item.StgRequestCancel = true;
                                 item.StgRequestEdit = false;
+                                item.IdRequest = Requests_db.Count() + 1;
                                 Requests_db.Add(item);
                                 break;
-                            case "Новая":                               
+                            case "Новая": //Параметры при передаче на выполнение
                                 item.RequestStatus = "На выполнении";
                                 item.RequestNextStep = "Выполнено";
                                 item.StgRequestCancel = false;
                                 break;
-                            case "На выполнении":                          
+                            case "На выполнении": //Параметры при доставке на место назначения
                                 item.RequestStatus = "Выполнено";
                                 item.RequestNextStep = "Удалить";
+                                item.RequestCancelText = "Доставлено по назначению";
                                 break;
-                            case "Отмена" or "Выполнено":                            
+                            case "Отмена" or "Выполнено": //Параметры при удалении
                                 item.RequestNextStep = string.Empty;
                                 item.StgRequestMove = false;
                                 item.RequestStatus = "Удалено";
                                 break;
                         }
-               
+
 
                         var item_db = Requests_db.Where(w => w.IdRequest == item.IdRequest).FirstOrDefault();
                         if (item_db != null)
@@ -172,13 +171,27 @@ namespace TestedTask
                     if (string.IsNullOrEmpty(OneItem.RequestCancelText)) MessageBox.Show("Укажите в комментарии причину отмены");
                     else
                     {
-                        OneItem.StgRequestEdit = true;
-                        OneItem.RequestStatus = "Отмена";
-                        OneItem.RequestNextStep = "Удалить";
-                        OneItem.StgRequestCancel = false;
+                        try
+                        {
+                            if (Requests_db.Where(w => w.IdRequest == OneItem.IdRequest).Select(s => s.StgRequestCancel).First())
+                            {
+                                OneItem.StgRequestEdit = true;
+                                OneItem.RequestStatus = "Отмена";
+                                OneItem.RequestNextStep = "Удалить";
+                                OneItem.StgRequestCancel = false;
 
-                        BorderVisibility = Visibility.Hidden;
-                        OnPropertyChanged(nameof(BorderVisibility));
+                                BorderVisibility = Visibility.Hidden;
+                                OnPropertyChanged(nameof(BorderVisibility));
+                            }
+                            else
+                            {
+                                MessageBox.Show("Отмена не возможна");
+                            }
+                        }
+                        catch( Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
                     }
                     OnPropertyChanged(nameof(Requests));
 
@@ -195,9 +208,9 @@ namespace TestedTask
         {
             get { return new ObservableCollection<Request>(Requests_db.Where(w => FiltdedCheck(w))); }
         }
-     
 
-     
+
+
         //Обновление изменений
         public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
