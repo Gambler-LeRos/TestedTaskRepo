@@ -147,13 +147,14 @@ namespace TestedTask
                                     break;
                             }
                             db.SaveChanges();
+                            
 
                             OnPropertyChanged(nameof(Requests));
                             OnPropertyChanged(nameof(OneItem));
 
                         }
 
-
+                        db.Dispose();
                     }
                     else MessageBox.Show("Внесение изменений не возможно");
 
@@ -191,8 +192,11 @@ namespace TestedTask
                             }
                             else
                             {
+                                
                                 MessageBox.Show("Сохранение не возможно");
                             }
+
+                            db.Dispose();
                         }
                     }
                     catch (Exception ex)
@@ -242,6 +246,7 @@ namespace TestedTask
                             {
                                 MessageBox.Show("Отмена не возможна");
                             }
+                            db.Dispose();
                         }
                         catch (Exception ex)
                         {
@@ -276,7 +281,7 @@ namespace TestedTask
 
                             new DataBaseContext().Database.EnsureDeleted();
 
-                            DataBaseContext context = new DataBaseContext();
+                            DataBaseContext db = new DataBaseContext();
 
                             List<Request> NewItem = new List<Request>()
                             {
@@ -300,8 +305,9 @@ namespace TestedTask
                             };
 
 
-                            context.AddRange(NewItem);
-                            context.SaveChanges();
+                            db.AddRange(NewItem);
+                            db.SaveChanges();
+                            db.Dispose();
 
                             OnPropertyChanged(nameof(Requests));
                         }
@@ -325,6 +331,8 @@ namespace TestedTask
             {
                 DataBaseContext db = new DataBaseContext();
                 ObservableCollection<Request> Requests_db = new ObservableCollection<Request>(db.Requests);
+                db.Dispose();
+
                 return new ObservableCollection<Request>(Requests_db.Where(w => FiltdedCheck(w)));
             }
         }
