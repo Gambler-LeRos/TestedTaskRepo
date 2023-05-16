@@ -330,10 +330,11 @@ namespace TestedTask
             get
             {
                 DataBaseContext db = new DataBaseContext();
-                ObservableCollection<Request> Requests_db = new ObservableCollection<Request>(db.Requests);
+                ObservableCollection<Request> item = new ObservableCollection<Request>(db.Requests.AsEnumerable().Where(w => FiltdedCheck(w)));
                 db.Dispose();
 
-                return new ObservableCollection<Request>(Requests_db.Where(w => FiltdedCheck(w)));
+                return item;
+              
             }
         }
 
