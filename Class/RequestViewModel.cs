@@ -63,7 +63,10 @@ namespace TestedTask
         /// <summary>
         /// Открытие окна информации для добавления, редактирования и отмены заявки
         /// </summary>
-        private RelayCommand? _OpenInfoWindow;
+        
+        public event Action<Request> OpenInfoWindowEvent;
+
+        private RelayCommand? _OpenInfoWindow;    
         public RelayCommand OpenInfoWindow
         {
             get
@@ -73,11 +76,15 @@ namespace TestedTask
                 {
                     if (o is Request) OneItem = (Request)o;
                     else OneItem = new Request { RequestNextStep = "Создать", RequestStatus = "Создать" };
-
-                    new InfoWindow(this).ShowDialog();
-
+                    
+                    OpenInfoWindowEvent?.Invoke(OneItem);
                 }));
             }
+        }
+
+        public void DialogClosed()
+        {
+            //логика обработки после закрытия диалога
         }
 
         /// <summary>
