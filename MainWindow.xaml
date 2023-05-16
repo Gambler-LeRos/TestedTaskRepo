@@ -13,7 +13,8 @@
                 <TextBlock Text="Фильтр: " Width="70" VerticalAlignment="Center" TextAlignment="Right" Margin="3"/>
                 <TextBox Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Width="280" Margin="3"/>
                 <TextBlock Width="50"  Margin="3"/>
-                <Button Content="Зарегистрировать заявку" Width="180" Height="25" Margin="3" Command="{Binding ChangedVisibility}"/>
+                <Button Content="Зарегистрировать заявку" Width="180" Height="25" Margin="3" Command="{Binding OpenInfoWindow}"/>
+                <Button Content="Пересоздать БД" Width="100" Height="25" Margin="3" Command="{Binding DataBase_Remove}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -37,25 +38,25 @@
             </Border>
 
             <Border BorderThickness="1,0,1,1" BorderBrush="Black" HorizontalAlignment="Center" MinWidth="884">
-                <ScrollViewer MinHeight="300" VerticalScrollBarVisibility="Hidden">
+                <ScrollViewer MinHeight="300" MaxHeight="435" VerticalScrollBarVisibility="Hidden">
                     <ItemsControl ItemsSource="{Binding Requests}" >
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBox Text="{Binding RequestDate, StringFormat=\{0:dd.MM.yyyy\}}" Width="80" Margin="1" IsReadOnly="{Binding StgRequestEdit}" TextAlignment="Center"/>
-                                    <TextBox Text="{Binding RequestText}" Width="220" Margin="1" IsReadOnly="{Binding StgRequestEdit}" Padding="5,0,0,0"/>
-                                    <TextBox Text="{Binding TransferStart}" Width="140" Margin="1" IsReadOnly="{Binding StgRequestEdit}" Padding="5,0,0,0"/>
-                                    <TextBox Text="{Binding TransferEnd}" Width="140" Margin="1" IsReadOnly="{Binding StgRequestEdit}" Padding="5,0,0,0"/>
-                                    <TextBox Text="{Binding RequestStatus}" Width="100" Margin="1" IsReadOnly="{Binding StgRequestEdit}" Padding="5,0,0,0"/>
+                                    <TextBox Text="{Binding RequestDate, StringFormat=\{0:dd.MM.yyyy\}}" Width="80" Margin="1" IsReadOnly="True" TextAlignment="Center"  />
+                                    <TextBox Text="{Binding RequestText}" Width="220" Margin="1" IsReadOnly="True" Padding="5,0,0,0"/>
+                                    <TextBox Text="{Binding TransferStart}" Width="140" Margin="1" IsReadOnly="True" Padding="5,0,0,0"/>
+                                    <TextBox Text="{Binding TransferEnd}" Width="140" Margin="1" IsReadOnly="True" Padding="5,0,0,0"/>
+                                    <TextBox Text="{Binding RequestStatus}" Width="100" Margin="1" IsReadOnly="True" Padding="5,0,0,0"/>
                                     <Button Width="95"  Margin="1"
                                             Content="{Binding RequestNextStep}"  
                                             Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=DataContext.ChangedStatus}" CommandParameter="{Binding}" 
                                             IsEnabled="{Binding StgRequestMove}"/>
                                     <Button Content="Отменить" Width="65" Margin="1" 
-                                            Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=DataContext.ChangedVisibility}" CommandParameter="{Binding}"
+                                            Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=DataContext.OpenInfoWindow}" CommandParameter="{Binding}"
                                             IsEnabled="{Binding StgRequestCancel}" />
                                     <Button Content="i" Width="28" Margin="1" FontWeight="Bold" FontFamily="Consolas"
-                                            Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=DataContext.ChangedVisibility}" CommandParameter="{Binding}"
+                                            Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=DataContext.OpenInfoWindow}" CommandParameter="{Binding}"
                                             />
                                 </StackPanel>
                             </DataTemplate>
@@ -64,42 +65,5 @@
                 </ScrollViewer>
             </Border>
         </StackPanel>
-
-        <!--Окно информации, добавление/отмена/редактирование заявки-->
-        <Border Background="White" Opacity=".5" Visibility="{Binding BorderVisibility}"/>
-        <Border Background="White" Visibility="{Binding BorderVisibility}" BorderThickness="1" BorderBrush="Gray" Margin="100,50,100,0" Height="300">
-            <StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Content="X" Width="25" Height="25" Margin="5" Command="{Binding ChangedVisibility}" />
-                </StackPanel>
-                <StackPanel HorizontalAlignment="Center">
-                    <StackPanel Orientation="Horizontal" >
-                        <TextBlock Text="Описание" Width="100" Margin="3"/>
-                        <TextBox Text="{Binding OneItem.RequestText}" IsReadOnly="{Binding OneItem.StgRequestEdit}" Width="300" Margin="3"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" >
-                        <TextBlock Text="Отправление из" Width="100" Margin="3"/>
-                        <TextBox Text="{Binding OneItem.TransferStart}" IsReadOnly="{Binding OneItem.StgRequestEdit}"  Width="300" Margin="3"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" >
-                        <TextBlock Text="Доставка в" Width="100" Margin="3"/>
-                        <TextBox Text="{Binding OneItem.TransferEnd}"  IsReadOnly="{Binding OneItem.StgRequestEdit}" Width="300" Margin="3"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" >
-                        <TextBlock Text="Статус" Width="100" Margin="3"/>
-                        <TextBox Text="{Binding OneItem.RequestStatus}" IsReadOnly="True"  Width="300" Margin="3"/>
-                        <Button Content="{Binding OneItem.RequestNextStep}" Width="100" Margin="3" Command="{Binding ChangedStatus}" CommandParameter="{Binding OneItem}" IsEnabled="{Binding OneItem.StgRequestMove}"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" >
-                        <TextBlock Text="Комментарий" Width="100" Margin="3"/>
-                        <TextBox Text="{Binding OneItem.RequestCancelText}" Width="300" Margin="3"/>
-                        <Button Content="Отменить" Width="100" Margin="3" Command="{Binding CancelRequest}" IsEnabled="{Binding OneItem.StgRequestCancel}"/>
-                    </StackPanel>
-                </StackPanel>
-            </StackPanel>
-        </Border>
-
-
-
     </Grid>
 </Window>

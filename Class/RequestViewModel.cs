@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -7,11 +8,13 @@ using System.Windows;
 
 namespace TestedTask
 {
-    class RequestViewModel : INotifyPropertyChanged
+    public class RequestViewModel : INotifyPropertyChanged
     {
-
+        /// <summary>
+        /// Переменная фильтра строки поиска
+        /// </summary>
         string _filtertext = string.Empty;
-        public string Filter //Переменная фильтра строки поиска
+        public string Filter
         {
             get => _filtertext;
             set
@@ -21,8 +24,11 @@ namespace TestedTask
             }
         }
 
+        /// <summary>
+        /// Переменная фильтра статуса заявок
+        /// </summary>
         string _filterStatus = String.Empty;
-        public string FilterStatus //Переменная фильтра статуса заявок
+        public string FilterStatus
         {
             get => _filterStatus;
             set
@@ -32,10 +38,11 @@ namespace TestedTask
             }
         }
 
-
-
+        /// <summary>
+        /// Изменение отображаемого списка заявок по статусам
+        /// </summary>
         private RelayCommand? _changedViewStatus;
-        public RelayCommand ChangedViewStatus //Изменение отображаемого списка заявок по статусам
+        public RelayCommand ChangedViewStatus
         {
             get
             {
@@ -49,48 +56,36 @@ namespace TestedTask
             }
         }
 
-        public Visibility BorderVisibility { get; set; } = Visibility.Hidden; //Отображение окна добавления и отмены заявки
         public Visibility CancelReqVisibility { get; set; } = Visibility.Hidden; //Отображение строки комментария при отмене заявки
         public Visibility NewReqVisibility { get; set; } = Visibility.Visible; //Отображение кнопки создания заявки
         public Request OneItem { get; set; } = new Request(); //Переменная для создания и отмены заявки
 
-        private RelayCommand? _changedVisibility;
-        public RelayCommand ChangedVisibility //Изменение видимости окна добавления и отмены заявки
+        /// <summary>
+        /// Открытие окна информации для добавления, редактирования и отмены заявки
+        /// </summary>
+        private RelayCommand? _OpenInfoWindow;
+        public RelayCommand OpenInfoWindow
         {
             get
             {
-                return _changedVisibility ??
-                (_changedVisibility = new RelayCommand((o) =>
+                return _OpenInfoWindow ??
+                (_OpenInfoWindow = new RelayCommand((o) =>
                 {
-                    if (o is Request)
-                    {
-                        OneItem = (Request)o;
-                        CancelReqVisibility = Visibility.Visible;
-                        NewReqVisibility = Visibility.Hidden;
-                    }
-                    else
-                    {
-                        OneItem = new Request { RequestNextStep = "Создать", RequestStatus = "Создать"};
-                        CancelReqVisibility = Visibility.Hidden;
-                        NewReqVisibility = Visibility.Visible;
-                    }
+                    if (o is Request) OneItem = (Request)o;
+                    else OneItem = new Request { RequestNextStep = "Создать", RequestStatus = "Создать" };
 
-                    OnPropertyChanged(nameof(NewReqVisibility));
-                    OnPropertyChanged(nameof(CancelReqVisibility));
-                    OnPropertyChanged(nameof(OneItem));
+                    new InfoWindow(this).ShowDialog();
 
-                    if (BorderVisibility == Visibility.Hidden) BorderVisibility = Visibility.Visible;
-                    else BorderVisibility = Visibility.Hidden;
-
-                    OnPropertyChanged(nameof(BorderVisibility));
                 }));
             }
         }
 
-
-
-
-        public bool FiltdedCheck(Request item) //Фильтрация списка коллекции
+        /// <summary>
+        /// Фильтрация списка коллекции
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public bool FiltdedCheck(Request item)
         {
             bool accept = true;
             if (!string.IsNullOrEmpty(Filter))
@@ -99,14 +94,15 @@ namespace TestedTask
                 accept = (item.RequestText.ToLower().Contains(FindText) || item.TransferStart.ToLower().Contains(FindText) || item.TransferEnd.ToLower().Contains(FindText) || item.RequestStatus.ToLower().Contains(FindText));
             }
             else if (FilterStatus != string.Empty && FilterStatus != "Все" && item.RequestStatus != FilterStatus) accept = false;
-            
 
             return accept;
         }
 
-
+        /// <summary>
+        /// Изменение статуса и настроек отображения/изменения заявки/Создание записи новой заявки
+        /// </summary>
         private RelayCommand? _changedStatus;
-        public RelayCommand ChangedStatus //Изменение статуса и настроек отображения/изменения заявки/Создание записи новой заявки
+        public RelayCommand ChangedStatus
         {
             get
             {
@@ -116,52 +112,106 @@ namespace TestedTask
                     Request item = obj as Request;
                     if (item != null)
                     {
-                        item.StgRequestEdit = true;
+                        DataBaseContext db = new DataBaseContext();
 
-                        switch (item.RequestStatus)
+                        if ((item != null && item.StgRequestMove) || item.RequestStatus == "Создать")
                         {
-                            case "Создать": //Параметры при создании
-                                item.RequestNextStep = "На выполнение";
-                                item.RequestStatus = "Новая";
-                                item.StgRequestCancel = true;
-                                item.StgRequestEdit = false;
-                                item.IdRequest = Requests_db.Count() + 1;
-                                Requests_db.Add(item);
-                                break;
-                            case "Новая": //Параметры при передаче на выполнение
-                                item.RequestStatus = "На выполнении";
-                                item.RequestNextStep = "Выполнено";
-                                item.StgRequestCancel = false;
-                                break;
-                            case "На выполнении": //Параметры при доставке на место назначения
-                                item.RequestStatus = "Выполнено";
-                                item.RequestNextStep = "Удалить";
-                                item.RequestCancelText = "Доставлено по назначению";
-                                break;
-                            case "Отмена" or "Выполнено": //Параметры при удалении
-                                item.RequestNextStep = string.Empty;
-                                item.StgRequestMove = false;
-                                item.RequestStatus = "Удалено";
-                                break;
+                            item.StgRequestEdit = true;
+                            switch (item.RequestStatus)
+                            {
+                                case "Создать": //Параметры при создании
+                                    item.RequestNextStep = "На выполнение";
+                                    item.RequestStatus = "Новая";
+                                    item.StgRequestCancel = true;
+                                    item.StgRequestEdit = false;
+                                    db.Requests.Add(item);
+
+                                    break;
+                                case "Новая": //Параметры при передаче на выполнение
+                                    item.RequestStatus = "На выполнении";
+                                    item.RequestNextStep = "Выполнено";
+                                    item.StgRequestCancel = false;
+                                    db.Requests.Update(item);
+                                    break;
+                                case "На выполнении": //Параметры при доставке на место назначения
+                                    item.RequestStatus = "Выполнено";
+                                    item.RequestNextStep = "Удалить";
+                                    item.RequestCancelText = "Доставлено по назначению";
+                                    db.Requests.Update(item);
+                                    break;
+                                case "Отмена" or "Выполнено": //Параметры при удалении
+                                    item.RequestNextStep = string.Empty;
+                                    item.StgRequestMove = false;
+                                    item.RequestStatus = "Удалено";
+                                    db.Requests.Update(item);
+                                    break;
+                            }
+                            db.SaveChanges();
+
+                            OnPropertyChanged(nameof(Requests));
+                            OnPropertyChanged(nameof(OneItem));
+
                         }
 
 
-                        var item_db = Requests_db.Where(w => w.IdRequest == item.IdRequest).FirstOrDefault();
-                        if (item_db != null)
-                        {
-                            item_db = item;
-                        }
-
-                        OnPropertyChanged(nameof(OneItem));
-                        OnPropertyChanged(nameof(Requests));
                     }
+                    else MessageBox.Show("Внесение изменений не возможно");
+
+                }));
+            }
+        }
+
+        /// <summary>
+        /// Иохранение изменений в заявке
+        /// </summary>
+
+        private RelayCommand? _SaveRequest;
+        public RelayCommand SaveRequest
+        {
+            get
+            {
+                return _SaveRequest ??
+                (_SaveRequest = new RelayCommand((obj) =>
+                {
+                    try
+                    {
+                        Request item = obj as Request;
+                        if (item != null)
+                        {
+                            DataBaseContext db = new DataBaseContext();
+
+                            if (db.Requests.Where(w => w.IdRequest == OneItem.IdRequest).Select(s => s.StgRequestCancel).First())
+                            {
+                                db.Requests.Update(item);
+                                db.SaveChanges();
+
+                                OnPropertyChanged(nameof(Requests));
+                                OnPropertyChanged(nameof(OneItem));
+                                MessageBox.Show("Изменения сохранены");
+                            }
+                            else
+                            {
+                                MessageBox.Show("Сохранение не возможно");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+
+
                 }));
             }
         }
 
 
+        /// <summary>
+        /// Отмена заявки
+        /// </summary>
+
         private RelayCommand? _CancelRequest;
-        public RelayCommand CancelRequest //Отмена заявки
+        public RelayCommand CancelRequest
         {
             get
             {
@@ -173,27 +223,91 @@ namespace TestedTask
                     {
                         try
                         {
-                            if (Requests_db.Where(w => w.IdRequest == OneItem.IdRequest).Select(s => s.StgRequestCancel).First())
+                            DataBaseContext db = new DataBaseContext();
+
+                            if (db.Requests.Where(w => w.IdRequest == OneItem.IdRequest).Select(s => s.StgRequestCancel).First())
                             {
                                 OneItem.StgRequestEdit = true;
                                 OneItem.RequestStatus = "Отмена";
                                 OneItem.RequestNextStep = "Удалить";
                                 OneItem.StgRequestCancel = false;
+                                db.Requests.Update(OneItem);
+                                db.SaveChanges();
 
-                                BorderVisibility = Visibility.Hidden;
-                                OnPropertyChanged(nameof(BorderVisibility));
+
+                                OnPropertyChanged(nameof(Requests));
+                                OnPropertyChanged(nameof(OneItem));
                             }
                             else
                             {
                                 MessageBox.Show("Отмена не возможна");
                             }
                         }
-                        catch( Exception ex)
+                        catch (Exception ex)
                         {
                             MessageBox.Show(ex.Message);
                         }
                     }
-                    OnPropertyChanged(nameof(Requests));
+
+
+                }));
+            }
+        }
+
+
+        /// <summary>
+        /// Пересоздать базу данных
+        /// </summary>
+        private RelayCommand? _DataBase_Remove;
+        public RelayCommand DataBase_Remove
+        {
+            get
+            {
+                return _DataBase_Remove ??
+                (_DataBase_Remove = new RelayCommand((o) =>
+                {
+                    try
+                    {
+                        MessageBoxResult result = MessageBox.Show("Пересоздать базу данных?", "Подтвердите действие", MessageBoxButton.YesNo);
+
+                        if (result == MessageBoxResult.Yes)
+                        {
+
+
+                            new DataBaseContext().Database.EnsureDeleted();
+
+                            DataBaseContext context = new DataBaseContext();
+
+                            List<Request> NewItem = new List<Request>()
+                            {
+                                new Request {  RequestText = "Доставить груз_1 в Питер", RequestStatus = "Новая", TransferStart = "Москва", TransferEnd = "Санкт-Петербург", StgRequestCancel = true },
+                                new Request {  RequestText = "Доставить груз_1 в Иваново", RequestStatus = "На выполнении", TransferStart = "Москва", TransferEnd = "Иваново", RequestNextStep = "Выполнено", StgRequestCancel = false, StgRequestEdit = true },
+                                new Request {  RequestText = "Доставить груз_1 в Рязань", RequestStatus = "Новая", TransferStart = "Москва", TransferEnd = "Рязань", StgRequestCancel = true },
+                                new Request {  RequestText = "Доставить груз_1 в Тула", RequestStatus = "Отмена", TransferStart = "М.О.", TransferEnd = "Тула", RequestNextStep = "Удалить", StgRequestCancel = false, StgRequestEdit = true },
+                                new Request {  RequestText = "Доставить груз_1 в Звенигород", RequestStatus = "Выполнено", TransferStart = "Москва", TransferEnd = "Звенигород", RequestNextStep = "Удалить", StgRequestCancel = false, StgRequestEdit = true },
+
+                                new Request {  RequestText = "Доставить груз_2 в Питер", RequestStatus = "Новая", TransferStart = "Москва", TransferEnd = "Санкт-Петербург", StgRequestCancel = true },
+                                new Request {  RequestText = "Доставить груз_2 в Иваново", RequestStatus = "На выполнении", TransferStart = "Москва", TransferEnd = "Иваново", RequestNextStep = "Выполнено", StgRequestCancel = false, StgRequestEdit = true },
+                                new Request {  RequestText = "Доставить груз_2 в Рязань", RequestStatus = "Новая", TransferStart = "Москва", TransferEnd = "Рязань", StgRequestCancel = true },
+                                new Request {  RequestText = "Доставить груз_2 в Тула", RequestStatus = "Отмена", TransferStart = "М.О.", TransferEnd = "Тула", RequestNextStep = "Удалить", StgRequestCancel = false, StgRequestEdit = true },
+                                new Request {  RequestText = "Доставить груз_2 в Звенигород", RequestStatus = "Выполнено", TransferStart = "Москва", TransferEnd = "Звенигород", RequestNextStep = "Удалить", StgRequestCancel = false, StgRequestEdit = true },
+
+                                new Request {  RequestText = "Доставить груз_3 в Питер", RequestStatus = "Новая", TransferStart = "Москва", TransferEnd = "Санкт-Петербург", StgRequestCancel = true },
+                                new Request {  RequestText = "Доставить груз_3 в Иваново", RequestStatus = "На выполнении", TransferStart = "Москва", TransferEnd = "Иваново", RequestNextStep = "Выполнено", StgRequestCancel = false, StgRequestEdit = true },
+                                new Request {  RequestText = "Доставить груз_3 в Рязань", RequestStatus = "Новая", TransferStart = "Москва", TransferEnd = "Рязань", StgRequestCancel = true },
+                                new Request {  RequestText = "Доставить груз_3 в Тула", RequestStatus = "Отмена", TransferStart = "М.О.", TransferEnd = "Тула", RequestNextStep = "Удалить", StgRequestCancel = false, StgRequestEdit = true },
+                                new Request {  RequestText = "Доставить груз_3 в Звенигород", RequestStatus = "Удалено", TransferStart = "Москва", TransferEnd = "Звенигород", StgRequestMove = false, RequestNextStep = string.Empty, StgRequestCancel = false, StgRequestEdit = true },
+                            };
+
+
+                            context.AddRange(NewItem);
+                            context.SaveChanges();
+
+                            OnPropertyChanged(nameof(Requests));
+                        }
+
+                    }
+                    catch (Exception ex) { MessageBox.Show(ex.Message); }
 
                 }));
             }
@@ -202,16 +316,23 @@ namespace TestedTask
 
 
 
-
-        public ObservableCollection<Request> Requests_db = new ObservableCollection<Request>(DataContext_db.GetRequests()); //Эмуляция запроса к базе данных
-        public ObservableCollection<Request> Requests //Отображаемый список
+        /// <summary>
+        /// Отображаемый список
+        /// </summary>
+        public ObservableCollection<Request> Requests
         {
-            get { return new ObservableCollection<Request>(Requests_db.Where(w => FiltdedCheck(w))); }
+            get
+            {
+                DataBaseContext db = new DataBaseContext();
+                ObservableCollection<Request> Requests_db = new ObservableCollection<Request>(db.Requests);
+                return new ObservableCollection<Request>(Requests_db.Where(w => FiltdedCheck(w)));
+            }
         }
 
+        /// <summary>
+        /// Обновление изменений
+        /// </summary>
 
-
-        //Обновление изменений
         public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {

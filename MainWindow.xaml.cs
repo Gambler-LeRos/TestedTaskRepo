@@ -1,16 +1,13 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 
 namespace TestedTask
-{    
+{
     public partial class MainWindow : Window
-    {    
+    {   
         public MainWindow()
         {
-            InitializeComponent();           
+            InitializeComponent();
             DataContext = new RequestViewModel();
-
         }
-     
     }
 }
