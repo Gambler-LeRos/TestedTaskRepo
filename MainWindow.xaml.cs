@@ -15,8 +15,7 @@ namespace TestedTask
 
         private void Vm_OpenInfoWindowEvent(Request item)
         {
-            new InfoWindow(_vm).ShowDialog();           
-            _vm.DialogClosed();
+            new InfoWindow(_vm).ShowDialog();       
         }
         
     }

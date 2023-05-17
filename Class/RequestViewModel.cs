@@ -54,10 +54,7 @@ namespace TestedTask
                      FilterStatus = status;
                  }));
             }
-        }
-
-        public Visibility CancelReqVisibility { get; set; } = Visibility.Hidden; //Отображение строки комментария при отмене заявки
-        public Visibility NewReqVisibility { get; set; } = Visibility.Visible; //Отображение кнопки создания заявки
+        }    
         public Request OneItem { get; set; } = new Request(); //Переменная для создания и отмены заявки
 
         /// <summary>
@@ -80,11 +77,6 @@ namespace TestedTask
                     OpenInfoWindowEvent?.Invoke(OneItem);
                 }));
             }
-        }
-
-        public void DialogClosed()
-        {
-            //логика обработки после закрытия диалога
         }
 
         /// <summary>
@@ -153,15 +145,14 @@ namespace TestedTask
                                     db.Requests.Update(item);
                                     break;
                             }
-                            db.SaveChanges();
-                            
+                            db.SaveChanges();   
+                            db.Dispose();
 
                             OnPropertyChanged(nameof(Requests));
                             OnPropertyChanged(nameof(OneItem));
 
                         }
 
-                        db.Dispose();
                     }
                     else MessageBox.Show("Внесение изменений не возможно");
 
@@ -244,7 +235,7 @@ namespace TestedTask
                                 OneItem.StgRequestCancel = false;
                                 db.Requests.Update(OneItem);
                                 db.SaveChanges();
-
+                                db.Dispose();
 
                                 OnPropertyChanged(nameof(Requests));
                                 OnPropertyChanged(nameof(OneItem));
@@ -253,7 +244,7 @@ namespace TestedTask
                             {
                                 MessageBox.Show("Отмена не возможна");
                             }
-                            db.Dispose();
+                           
                         }
                         catch (Exception ex)
                         {
