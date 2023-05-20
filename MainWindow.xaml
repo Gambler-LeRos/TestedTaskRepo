@@ -13,7 +13,7 @@
                 <TextBlock Text="Фильтр: " Width="70" VerticalAlignment="Center" TextAlignment="Right" Margin="3"/>
                 <TextBox Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Width="280" Margin="3"/>
                 <TextBlock Width="50"  Margin="3"/>
-                <Button Content="Зарегистрировать заявку" Width="180" Height="25" Margin="3" Command="{Binding OpenInfoWindow}"/>
+                <Button Content="Зарегистрировать заявку" Width="180" Height="25" Margin="3" Command="{Binding OpenInfoWindow}" CommandParameter="0"/>
                 <Button Content="Пересоздать БД" Width="100" Height="25" Margin="3" Command="{Binding DataBase_Remove}"/>
             </StackPanel>
 
@@ -53,10 +53,10 @@
                                             Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=DataContext.ChangedStatus}" CommandParameter="{Binding}" 
                                             IsEnabled="{Binding StgRequestMove}"/>
                                     <Button Content="Отменить" Width="65" Margin="1" 
-                                            Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=DataContext.OpenInfoWindow}" CommandParameter="{Binding}"
+                                            Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=DataContext.OpenInfoWindow}" CommandParameter="{Binding IdRequest}"
                                             IsEnabled="{Binding StgRequestCancel}" />
                                     <Button Content="i" Width="28" Margin="1" FontWeight="Bold" FontFamily="Consolas"
-                                            Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=DataContext.OpenInfoWindow}" CommandParameter="{Binding}"
+                                            Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=DataContext.OpenInfoWindow}" CommandParameter="{Binding IdRequest}"
                                             />
                                 </StackPanel>
                             </DataTemplate>

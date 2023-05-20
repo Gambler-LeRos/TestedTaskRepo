@@ -11,11 +11,13 @@ namespace TestedTask
             _vm = new RequestViewModel();
             DataContext = _vm;
             _vm.OpenInfoWindowEvent += Vm_OpenInfoWindowEvent;
+            
         }
-
-        private void Vm_OpenInfoWindowEvent(Request item)
+    
+        private void Vm_OpenInfoWindowEvent(int idRequest)
         {
-            new InfoWindow(_vm).ShowDialog();       
+            new InfoWindow(idRequest).ShowDialog();
+            _vm.DialogClosed();
         }
         
     }

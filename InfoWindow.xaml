@@ -6,32 +6,32 @@
         xmlns:local="clr-namespace:TestedTask"
         mc:Ignorable="d"
         Title="InfoWindow" Height="250" Width="600">
-    <Grid>            
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <StackPanel Orientation="Horizontal" >
-                    <TextBlock Text="Описание" Width="100" Margin="3"/>
-                    <TextBox Text="{Binding OneItem.RequestText}" IsReadOnly="{Binding OneItem.StgRequestEdit}" Width="300" Margin="3"/>
-                <Button Content="Сохранить" Width="100" Margin="3" Command="{Binding SaveRequest}" CommandParameter="{Binding OneItem}" IsEnabled="{Binding OneItem.StgRequestCancel}"/>
+    <Grid>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal" >
+                <TextBlock Text="Описание" Width="100" Margin="3"/>
+                <TextBox Text="{Binding RequestText}" IsReadOnly="{Binding StgRequestEdit}" Width="300" Margin="3"/>
+                <Button Content="Сохранить" Width="100" Margin="3" Command="{Binding SaveRequest}" CommandParameter="{Binding OneItem}" IsEnabled="{Binding StgRequestCancel}"/>
             </StackPanel>
-                <StackPanel Orientation="Horizontal" >
-                    <TextBlock Text="Отправление из" Width="100" Margin="3"/>
-                    <TextBox Text="{Binding OneItem.TransferStart}" IsReadOnly="{Binding OneItem.StgRequestEdit}"  Width="300" Margin="3"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" >
-                    <TextBlock Text="Доставка в" Width="100" Margin="3"/>
-                    <TextBox Text="{Binding OneItem.TransferEnd}"  IsReadOnly="{Binding OneItem.StgRequestEdit}" Width="300" Margin="3"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" >
-                    <TextBlock Text="Статус" Width="100" Margin="3"/>
-                    <TextBox Text="{Binding OneItem.RequestStatus}" IsReadOnly="True"  Width="300" Margin="3"/>
-                    <Button Content="{Binding OneItem.RequestNextStep}" Width="100" Margin="3" Command="{Binding ChangedStatus}" CommandParameter="{Binding OneItem}" IsEnabled="{Binding OneItem.StgRequestMove}"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" >
-                    <TextBlock Text="Комментарий" Width="100" Margin="3"/>
-                    <TextBox Text="{Binding OneItem.RequestCancelText}" Width="300" Margin="3"/>
-                    <Button Content="Отменить" Width="100" Margin="3" Command="{Binding CancelRequest}" IsEnabled="{Binding OneItem.StgRequestCancel}"/>
-                </StackPanel>
+            <StackPanel Orientation="Horizontal" >
+                <TextBlock Text="Отправление из" Width="100" Margin="3"/>
+                <TextBox Text="{Binding TransferStart}" IsReadOnly="{Binding StgRequestEdit}"  Width="300" Margin="3"/>
             </StackPanel>
-       
+            <StackPanel Orientation="Horizontal" >
+                <TextBlock Text="Доставка в" Width="100" Margin="3"/>
+                <TextBox Text="{Binding TransferEnd}"  IsReadOnly="{Binding StgRequestEdit}" Width="300" Margin="3"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" >
+                <TextBlock Text="Статус" Width="100" Margin="3"/>
+                <TextBox Text="{Binding RequestStatus}" IsReadOnly="True"  Width="300" Margin="3"/>
+                <Button Content="{Binding RequestNextStep}" Width="100" Margin="3" Click="ChangedStatus" IsEnabled="{Binding StgRequestMove}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" >
+                <TextBlock Text="Комментарий" Width="100" Margin="3"/>
+                <TextBox Text="{Binding RequestCancelText}" Width="300" Margin="3"/>
+                <Button Content="Отменить" Width="100" Margin="3" Click="CancelRequest" IsEnabled="{Binding StgRequestCancel}"/>
+            </StackPanel>
+        </StackPanel>
+
     </Grid>
 </Window>
